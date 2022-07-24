@@ -978,10 +978,11 @@ impl Config {
         }
     }
 
+    pub fn flycheck_on_save(&self) -> bool {
+        self.data.checkOnSave_enable
+    }
+
     pub fn flycheck(&self) -> Option<FlycheckConfig> {
-        if !self.data.checkOnSave_enable {
-            return None;
-        }
         let flycheck_config = match &self.data.checkOnSave_overrideCommand {
             Some(args) if !args.is_empty() => {
                 let mut args = args.clone();

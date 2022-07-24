@@ -47,6 +47,14 @@ impl Request for ReloadWorkspace {
     const METHOD: &'static str = "rust-analyzer/reloadWorkspace";
 }
 
+pub enum DoFlycheck {}
+
+impl Request for DoFlycheck {
+    type Params = ();
+    type Result = ();
+    const METHOD: &'static str = "rust-analyzer/doFlycheck";
+}
+
 pub enum SyntaxTree {}
 
 impl Request for SyntaxTree {

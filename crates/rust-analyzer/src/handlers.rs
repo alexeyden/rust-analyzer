@@ -51,6 +51,14 @@ pub(crate) fn handle_workspace_reload(state: &mut GlobalState, _: ()) -> Result<
     Ok(())
 }
 
+pub(crate) fn handle_do_flycheck(state: &mut GlobalState, _: ()) -> Result<()> {
+    for flycheck in &state.flycheck {
+        flycheck.update();
+    }
+
+    Ok(())
+}
+
 pub(crate) fn handle_analyzer_status(
     snap: GlobalStateSnapshot,
     params: lsp_ext::AnalyzerStatusParams,

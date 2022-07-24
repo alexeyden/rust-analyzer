@@ -600,6 +600,7 @@ impl GlobalState {
                 Ok(())
             })
             .on_sync_mut::<lsp_ext::ReloadWorkspace>(handlers::handle_workspace_reload)
+            .on_sync_mut::<lsp_ext::DoFlycheck>(handlers::handle_do_flycheck)
             .on_sync_mut::<lsp_ext::MemoryUsage>(handlers::handle_memory_usage)
             .on_sync_mut::<lsp_ext::ShuffleCrateGraph>(handlers::handle_shuffle_crate_graph)
             .on_sync::<lsp_ext::JoinLines>(handlers::handle_join_lines)
@@ -734,9 +735,12 @@ impl GlobalState {
                 Ok(())
             })?
             .on::<lsp_types::notification::DidSaveTextDocument>(|this, params| {
-                for flycheck in &this.flycheck {
-                    flycheck.update();
+                if this.config.flycheck_on_save() {
+                    for flycheck in &this.flycheck {
+                        flycheck.update();
+                    }
                 }
+
                 if let Ok(abs_path) = from_proto::abs_path(&params.text_document.uri) {
                     if reload::should_refresh_for_change(&abs_path, ChangeKind::Modify) {
                         this.fetch_workspaces_queue
